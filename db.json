@@ -1,0 +1,34 @@
+{
+    "db_fornecedor": [
+        {
+            "idFornecedor": 1,
+            "nomeFornecedor": "teste",
+            "nomeFantasia": "teste",
+            "CNPJ": 1
+        }
+    ],
+    "db_produto": [
+        {
+            "idProduto": 1,
+            "nomeProduto": "teste",
+            "descricao": "teste",
+            "dataRegistro": 1
+        }
+    ],
+    "db_estoque": [
+        {
+            "idProduto": 1,
+            "idFornecedor": 1,
+            "nomeProduto": "teste",
+            "dataInclusao": 1,
+            "dataValidade": 1,
+            "quantidade": 1,
+            "preçoCusto": 2.35
+        }
+    ],
+    "db_ml": [
+        {
+            "margemLucro": 0
+        }
+    ]
+}
