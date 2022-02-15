@@ -12,9 +12,8 @@
             {{ produto.nomeProduto }}
           </option>
         </select>
-        <!-- <input id="buscar-input" type="text" /> -->
       </div>
-      <div class="input-container">
+      <div class="input-container2">
         <label for="">Quantidade</label>
         <input id="quantidade-input" v-model="quantidade" type="text" />
         <button @click="plusButtonLogic()" id="add-button">+</button>
@@ -24,17 +23,11 @@
       v-model="pedido"
       name="pedido"
       id=""
-      cols="100"
-      rows="16"
+      cols="80"
+      rows="15"
     ></textarea>
     <div class="non-input">
-      <div class="pagamento">
-        <button>Dinheiro</button>
-        <button>Débito</button>
-        <button>Crédito</button>
-        <button>PIX</button>
-      </div>
-      <button>Gerar Canhoto</button>
+      <button @click="setTotal()">Total</button>
     </div>
   </div>
 </template>
@@ -70,11 +63,11 @@ export default {
       let custo = Number(arr[0].precoCusto);
       let lucro = Number(arr[0].precoCusto) * Number(Number(this.ml) / 100);
 
-      this.pedido +=
-        `  ${arr[0].nomeProduto}\t  QTD: ${this.quantidade}\t  Preço: ${(
-          (custo + lucro) *
-          this.quantidade
-        ).toFixed(2)} \n` + `  Total: \t\t\t  99.99(PH)`;
+      this.pedido += ` ${arr[0].nomeProduto.padEnd(30, " ")}\tQTD: ${
+        this.quantidade
+      }\t\t\tPreço: ${((custo + lucro) * this.quantidade).toFixed(2)} \n`;
+
+      window.pedidoTeste = this.pedido;
     },
     getDadosProduto() {
       let listaProdutos = document.getElementById("buscarProduto");
@@ -84,6 +77,23 @@ export default {
       let precoCusto = this.db.db_estoque[index].preçoCusto;
 
       return { nomeProduto, precoCusto };
+    },
+    setTotal() {
+      let regex = new RegExp(/\d+\.\d{2}/, "g");
+      let valores = this.pedido
+        .split(" ")
+        .filter((element) => element.match(regex));
+
+      // let valores = this.pedido.map(e=> e.split(" ").filter(element => element.match(/\d+\.\d{2}/g)))
+      let value = 0;
+      for (let index = 0; index < valores.length; index++) {
+        value = value + Number(valores[index]);
+      }
+
+      // console.log(valores, value);
+
+      this.pedido +=
+        `\n\n `.padEnd(30, " ") + `\tTotal:` + `\t\t\t${value.toFixed(2)}`;
     },
   },
   created() {
@@ -116,13 +126,18 @@ export default {
   /* z-index: 9999; */
   padding: -1rem 0;
 }
-.input-container {
+.input-container,
+.input-container2 {
   margin: 1.5% 0;
   display: flex;
   padding: 2%;
   min-width: 24rem;
   justify-content: space-between;
   border-radius: 5px;
+}
+
+.input-container2 {
+  min-width: 30rem;
 }
 
 input {
@@ -178,8 +193,11 @@ button {
 }
 
 #add-button {
-  margin: -1% 0 1% 2%;
-  /* margin: auto 1%; */
+  margin: -1% 0 1% 10%;
   padding: 0 5%;
+}
+
+textarea {
+  font-size: 1rem;
 }
 </style>

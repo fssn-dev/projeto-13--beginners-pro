@@ -13,8 +13,6 @@
 </template>
 
 <script>
-// import db from "../../db.json";
-
 export default {
   name: "MargemLucro",
   data() {

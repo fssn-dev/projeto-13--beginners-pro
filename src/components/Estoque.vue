@@ -17,7 +17,6 @@
             {{ produto.nomeProduto }}
           </option>
         </select>
-        <!-- <input type="text" /> -->
       </div>
       <div class="input-container">
         <label for="">Fornecedor</label>
@@ -30,7 +29,6 @@
             {{ fornecedor.nomeFantasia }}
           </option>
         </select>
-        <!-- <input type="text" /> -->
       </div>
       <div class="input-container">
         <label for="">Código Produto</label>
@@ -137,16 +135,12 @@ export default {
       localStorage.setItem("burgeria_db", JSON.stringify(this.db));
     },
   },
-  // setDB() {
-  //   this.db = JSON.parse(localStorage.getItem("burgeria_db")) || "";
-  // },
   created() {
     this.fetchData();
     this.optionsProdutos();
     this.optionsFornecedores();
   },
   mounted() {
-    // this.setDB();
     this.getCodigoProduto();
   },
 };
