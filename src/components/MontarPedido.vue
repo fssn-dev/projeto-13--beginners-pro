@@ -3,18 +3,33 @@
     <div class="pedido-header">
       <div class="input-container">
         <label for="">Buscar</label>
-        <input id="buscar-input" type="text" />
+        <select name="produto" id="buscarProduto" required>
+          <option
+            v-for="produto in produtos"
+            :key="produto.idProduto"
+            value="produto"
+          >
+            {{ produto.nomeProduto }}
+          </option>
+        </select>
+        <!-- <input id="buscar-input" type="text" /> -->
       </div>
       <div class="input-container">
         <label for="">Quantidade</label>
-        <input id="quantidade-input" type="text" />
-        <button id="add-button">+</button>
+        <input id="quantidade-input" v-model="quantidade" type="text" />
+        <button @click="plusButtonLogic()" id="add-button">+</button>
       </div>
     </div>
-    <textarea name="pedido" id="" cols="100" rows="16" width></textarea>
+    <textarea
+      v-model="pedido"
+      name="pedido"
+      id=""
+      cols="100"
+      rows="16"
+    ></textarea>
     <div class="non-input">
       <div class="pagamento">
-        <button>Dinheiro</button> 
+        <button>Dinheiro</button>
         <button>Débito</button>
         <button>Crédito</button>
         <button>PIX</button>
@@ -27,6 +42,53 @@
 <script>
 export default {
   name: "MontarPedido",
+  data() {
+    return {
+      db: "",
+      produtos: "",
+      pedido: [],
+      quantidade: "",
+      ml: "",
+    };
+  },
+  methods: {
+    optionsProdutos() {
+      return Object.keys(this.db.db_estoque).map((key) => {
+        let element = this.db.db_estoque[key];
+        return `${element.nomeProduto}`;
+      });
+    },
+    setDB() {
+      this.db = JSON.parse(localStorage.getItem("burgeria_db"));
+      this.produtos = this.db.db_estoque;
+      this.ml = this.db.db_ml[0].margemLucro;
+    },
+    plusButtonLogic() {
+      let arr = [];
+      arr.push(this.getDadosProduto());
+
+      let custo = Number(arr[0].precoCusto);
+      let lucro = Number(arr[0].precoCusto) * Number(Number(this.ml) / 100);
+
+      this.pedido +=
+        `  ${arr[0].nomeProduto}\t  QTD: ${this.quantidade}\t  Preço: ${(
+          (custo + lucro) *
+          this.quantidade
+        ).toFixed(2)} \n` + `  Total: \t\t\t  99.99(PH)`;
+    },
+    getDadosProduto() {
+      let listaProdutos = document.getElementById("buscarProduto");
+      let index = listaProdutos.options.selectedIndex;
+
+      let nomeProduto = this.db.db_estoque[index].nomeProduto;
+      let precoCusto = this.db.db_estoque[index].preçoCusto;
+
+      return { nomeProduto, precoCusto };
+    },
+  },
+  created() {
+    this.setDB();
+  },
 };
 </script>
 

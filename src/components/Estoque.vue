@@ -1,5 +1,5 @@
 <template>
-  <form action="" @submit="cadastrarEstoque()">
+  <form action="" @submit.prevent="">
     <div class="container">
       <div class="input-container">
         <label for="">Produto</label>
@@ -27,7 +27,7 @@
             v-bind:key="fornecedor.idFornecedor"
             value="produto"
           >
-            {{ fornecedor.nomeFornecedor }}
+            {{ fornecedor.nomeFantasia }}
           </option>
         </select>
         <!-- <input type="text" /> -->
@@ -53,19 +53,20 @@
         <input type="float" v-model="precoCusto" required />
       </div>
       <div class="non-input">
-        <button>Cadastrar</button>
+        <button @click="cadastrarEstoque(), getCodigoProduto()">
+          Cadastrar
+        </button>
       </div>
     </div>
   </form>
 </template>
 
 <script>
-import db from "../../db.json";
-
 export default {
   name: "Estoque",
   data() {
     return {
+      db: "",
       data: "",
       produtos: "",
       fornecedores: "",
@@ -74,14 +75,16 @@ export default {
       dataValidade: "",
       quantidade: "",
       precoCusto: "",
+      nomeProduto: "",
+      fornecedorID: "",
     };
   },
   methods: {
     fetchData() {
       this.data = JSON.parse(localStorage.getItem("burgeria_db"));
+      this.db = this.data;
       this.produtos = this.data.db_produto;
       this.fornecedores = this.data.db_fornecedor;
-      window.dataTeste = this.data;
     },
     optionsProdutos() {
       return Object.keys(this.data.db_produto).map((key) => {
@@ -92,7 +95,8 @@ export default {
     optionsFornecedores() {
       return Object.keys(this.data.db_fornecedor).map((key) => {
         let element = this.data.db_fornecedor[key];
-        return `${element.nomeFornecedor}`;
+        this.fornecedorID = element.idFornecedor;
+        return `${element.nomeFantasia}`;
       });
     },
     getDate() {
@@ -107,36 +111,42 @@ export default {
       let listaProdutos = document.getElementById("selectProduto");
       let index = listaProdutos.options.selectedIndex;
 
-      let response = this.data.db_produto[index].idProduto;
+      let responseID = this.data.db_produto[index].idProduto;
+      let responseName = this.data.db_produto[index].nomeProduto;
 
-      this.codigoProduto = response;
+      this.codigoProduto = responseID;
+      this.nomeProduto = responseName;
     },
     cadastrarEstoque() {
       this.setEstoque();
-      this.idProduto = "";
-      this.nomeProduto = "";
-      this.descricao = "";
-      this.dataRegistro = "";
+      this.codigoProduto = "";
+      this.dataValidade = "";
+      this.quantidade = "";
+      this.precoCusto = "";
     },
     setEstoque() {
-      db.db_estoque.push({
+      this.db.db_estoque.push({
         idProduto: this.codigoProduto,
-        idFornecedor: 1,
-        nomeProduto: "teste",
+        idFornecedor: this.fornecedorID,
+        nomeProduto: this.nomeProduto,
         dataInclusao: this.dataInclusao,
         dataValidade: this.dataValidade,
         quantidade: this.quantidade,
         preçoCusto: this.precoCusto,
       });
-      localStorage.setItem("burgeria_db", JSON.stringify(db));
+      localStorage.setItem("burgeria_db", JSON.stringify(this.db));
     },
   },
+  // setDB() {
+  //   this.db = JSON.parse(localStorage.getItem("burgeria_db")) || "";
+  // },
   created() {
     this.fetchData();
     this.optionsProdutos();
     this.optionsFornecedores();
   },
   mounted() {
+    // this.setDB();
     this.getCodigoProduto();
   },
 };

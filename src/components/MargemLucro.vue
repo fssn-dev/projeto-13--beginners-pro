@@ -13,12 +13,13 @@
 </template>
 
 <script>
-import db from "../../db.json";
+// import db from "../../db.json";
 
 export default {
   name: "MargemLucro",
   data() {
     return {
+      db: "",
       margemLucro: "",
     };
   },
@@ -28,10 +29,16 @@ export default {
       this.margemLucro = "";
     },
     setMargemLucro() {
-      db.db_ml[0].margemLucro = this.margemLucro;
+      this.db.db_ml[0].margemLucro = this.margemLucro;
 
-      localStorage.setItem("burgeria_db", JSON.stringify(db));
+      localStorage.setItem("burgeria_db", JSON.stringify(this.db));
     },
+    setDB() {
+      this.db = JSON.parse(localStorage.getItem("burgeria_db")) || "";
+    },
+  },
+  created() {
+    this.setDB();
   },
 };
 </script>

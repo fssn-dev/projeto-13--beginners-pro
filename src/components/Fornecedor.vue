@@ -25,13 +25,13 @@
 </template>
 
 <script>
-import db from "../../db.json";
 import GenerateID from "../services/GenerateID.vue";
 
 export default {
   name: "Fornecedor",
   data() {
     return {
+      db: "",
       idFornecedor: "",
       nomeFornecedor: "",
       nomeFantasia: "",
@@ -48,13 +48,13 @@ export default {
       this.cnpj = "";
     },
     setFornecedores() {
-      db.db_fornecedor.push({
+      this.db.db_fornecedor.push({
         idFornecedor: this.idFornecedor,
         nomeFornecedor: this.nomeFornecedor,
         nomeFantasia: this.nomeFantasia,
         CNPJ: this.cnpj,
       });
-      localStorage.setItem("burgeria_db", JSON.stringify(db));
+      localStorage.setItem("burgeria_db", JSON.stringify(this.db));
     },
     checkIdInput() {
       if (!this.idFornecedor) {
@@ -66,6 +66,12 @@ export default {
     fornecedorID() {
       this.idFornecedor = GenerateID.methods.generateID();
     },
+    setDB() {
+      this.db = JSON.parse(localStorage.getItem("burgeria_db")) || "";
+    },
+  },
+  created() {
+    this.setDB();
   },
 };
 </script>

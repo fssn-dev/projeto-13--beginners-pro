@@ -25,13 +25,13 @@
 </template>
 
 <script>
-import db from "../../db.json";
 import GenerateID from "../services/GenerateID.vue";
 
 export default {
   name: "Produto",
   data() {
     return {
+      db: "",
       idProduto: "",
       nomeProduto: "",
       descricao: "",
@@ -48,13 +48,13 @@ export default {
       this.dataRegistro = "";
     },
     setProdutos() {
-      db.db_produto.push({
+      this.db.db_produto.push({
         idProduto: this.idProduto,
         nomeProduto: this.nomeProduto,
         descricao: this.descricao,
         dataRegistro: this.dataRegistro,
       });
-      localStorage.setItem("burgeria_db", JSON.stringify(db));
+      localStorage.setItem("burgeria_db", JSON.stringify(this.db));
     },
     checkIdInput() {
       if (!this.idProduto) {
@@ -74,6 +74,12 @@ export default {
       });
       return date;
     },
+    setDB() {
+      this.db = JSON.parse(localStorage.getItem("burgeria_db")) || "";
+    },
+  },
+  created() {
+    this.setDB();
   },
 };
 </script>
